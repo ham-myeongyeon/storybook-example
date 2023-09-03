@@ -1,18 +1,24 @@
-/** @type { import('@storybook/react-vite').StorybookConfig } */
-const config = {
+module.exports = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   staticDirs: ["../public"],
+
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
+    "@storybook/preset-create-react-app",
     "@storybook/addon-interactions",
   ],
+
+  features: {
+    postcss: false,
+  },
+
   framework: {
-    name: "@storybook/react-vite",
+    name: "@storybook/react-webpack5",
     options: {},
   },
+
   docs: {
-    autodocs: "tag",
+    autodocs: true,
   },
 };
-export default config;
