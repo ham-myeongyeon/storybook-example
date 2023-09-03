@@ -14,8 +14,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@mui/base": "^5.0.0-beta.13",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.0.7"
   },
   "scripts": {
     "dev": "vite",
@@ -35,8 +37,10 @@
     "@storybook/react-vite": "^7.0.6",
     "@storybook/react-webpack5": "^7.0.6",
     "@storybook/testing-library": "^0.0.14-next.2",
+    "@tsconfig/recommended": "^1.0.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/styled-components": "^5.1.26",
     "@vitejs/plugin-react": "^3.1.0",
     "msw": "^1.2.1",
     "msw-storybook-addon": "^1.8.0",
