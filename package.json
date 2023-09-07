@@ -20,33 +20,36 @@
     "styled-components": "^6.0.7"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "webpack serve",
+    "build": "webpack",
+    "preview": "webpack preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "init-msw": "msw init public/"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.22.5",
+    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-typescript": "^7.22.15",
     "@storybook/addon-essentials": "^7.0.6",
     "@storybook/addon-interactions": "^7.0.6",
     "@storybook/addon-links": "^7.0.6",
     "@storybook/blocks": "^7.0.6",
     "@storybook/jest": "^0.1.0",
+    "@storybook/preset-create-react-app": "^7.4.0",
     "@storybook/react": "^7.0.6",
-    "@storybook/react-vite": "^7.0.6",
     "@storybook/react-webpack5": "^7.0.6",
     "@storybook/testing-library": "^0.0.14-next.2",
     "@tsconfig/recommended": "^1.0.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/styled-components": "^5.1.26",
-    "@vitejs/plugin-react": "^3.1.0",
     "msw": "^1.2.1",
     "msw-storybook-addon": "^1.8.0",
     "prop-types": "^15.8.1",
     "storybook": "^7.0.6",
-    "typescript": "^5.2.2",
-    "vite": "^4.2.0"
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "^5.2.2"
   }
 }
