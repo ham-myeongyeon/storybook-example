@@ -11,9 +11,9 @@ import styled, {
   FlattenInterpolation,
   ThemeProps,
 } from "styled-components";
-import * as MuiSelect,{ SelectProps } from "@mui/base/Select";
-import Popper from "@mui/base/Popper";
-import Option, { OptionProps } from "@mui/base/Option";
+import { Select as MuiSelect, SelectProps } from "@mui/base/Select";
+import { Popper } from "@mui/base/Popper";
+import { Option, OptionProps } from "@mui/base/Option";
 import DefaultSelect from "./DefaultSelect";
 
 interface SelectContextProps {
@@ -136,7 +136,7 @@ const CustomOption = ({
 
 interface SelectProps extends PropsWithChildren<unknown> {
   selectWidth?: string;
-  renderButton:  React.ReactNode;
+  renderButton: (arg: any) => React.ReactNode;
   listBoxStyle?: FlattenInterpolation<ThemeProps<DefaultTheme>>;
   onChangeSelect: (optionId: string) => void;
   selectedId: string | number;
