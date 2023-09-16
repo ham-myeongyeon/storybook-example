@@ -36,17 +36,17 @@ const config: StorybookConfig = {
   docs: {
     autodocs: true,
   },
-  // webpackFinal: async (config) => {
-  //   if (config.resolve) {
-  //     config.resolve.plugins = [
-  //       ...(config.resolve.plugins || []),
-  //       new TsconfigPathsPlugin({
-  //         extensions: config.resolve.extensions,
-  //       }),
-  //     ];
-  //   }
-  //   return config;
-  // },
+  webpackFinal: async (config) => {
+    if (config.resolve) {
+      config.resolve.plugins = [
+        ...(config.resolve.plugins || []),
+        new TsconfigPathsPlugin({
+          extensions: config.resolve.extensions,
+        }),
+      ];
+    }
+    return config;
+  },
 };
 
 export default config;
