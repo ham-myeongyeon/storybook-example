@@ -23,8 +23,17 @@ const config: StorybookConfig = {
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
-    // "@storybook/preset-create-react-app",
     "@storybook/addon-interactions",
+    {
+      name: "@storybook/addon-styling",
+      options: {
+        // Check out https://github.com/storybookjs/addon-styling/blob/main/docs/api.md
+        // For more details on this addon's options.
+        postCss: {
+          implementation: require.resolve("postcss"),
+        },
+      },
+    },
   ],
   // features: {
   //   postcss: false,
