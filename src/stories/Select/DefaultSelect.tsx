@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import ArrowDownSmallIcon from "src/components/Icon/ArrowDownSmallIcon";
-import { SelectContext } from "src/stories/Select/Select";
+import { SelectContext } from "src/stories/Select/OldSelect";
 
 const SelectBox = styled.div<{
   width?: string;
