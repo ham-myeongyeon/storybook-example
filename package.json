@@ -51,5 +51,8 @@
     "storybook": "^7.0.6",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.2.2"
+  },
+  "resolutions": {
+    "jackspeak": "2.1.1"
   }
 }
