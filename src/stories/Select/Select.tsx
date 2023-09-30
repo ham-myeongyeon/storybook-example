@@ -13,14 +13,19 @@ interface SelectContext {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectedOption: OptionMap | null;
   setSelectedOption: React.Dispatch<React.SetStateAction<OptionMap | null>>;
+  defaultValue?: OptionId;
+  placeholder?: string;
 }
 
 const SelectContext = React.createContext<SelectContext>({} as SelectContext);
 
-interface SelectProps extends React.PropsWithChildren {}
+interface SelectProps extends React.PropsWithChildren {
+  defaultValue?: OptionId;
+  placeholder?: string;
+}
 
 const Select: React.FC<SelectProps> = (props) => {
-  const { children } = props;
+  const { defaultValue, placeholder, children } = props;
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [selectedOption, setSelectedOption] = React.useState<OptionMap | null>(
     null
@@ -32,8 +37,10 @@ const Select: React.FC<SelectProps> = (props) => {
       setIsOpen,
       selectedOption,
       setSelectedOption,
+      defaultValue,
+      placeholder,
     }),
-    [isOpen, setIsOpen, selectedOption]
+    [isOpen, setIsOpen, selectedOption, defaultValue, placeholder]
   );
 
   return (
@@ -69,8 +76,8 @@ const Trigger: React.FC<TriggerProps> = (props) => {
 interface ValueProps {}
 
 const Value: React.FC<ValueProps> = () => {
-  const { selectedOption } = React.useContext(SelectContext);
-  const currentValue = selectedOption?.values().next().value;
+  const { selectedOption, placeholder } = React.useContext(SelectContext);
+  const currentValue = selectedOption?.values().next().value ?? placeholder;
 
   return <span>{currentValue}</span>;
 };
@@ -98,7 +105,8 @@ interface OptionProps extends React.PropsWithChildren {
 
 const Option: React.FC<OptionProps> = (props) => {
   const { value, children } = props;
-  const { selectedOption, setSelectedOption } = React.useContext(SelectContext);
+  const { defaultValue, selectedOption, setSelectedOption } =
+    React.useContext(SelectContext);
 
   const handleClickOption = () => {
     if (selectedOption?.get(value)) return;
@@ -107,6 +115,15 @@ const Option: React.FC<OptionProps> = (props) => {
     current.set(value, children);
     setSelectedOption(current);
   };
+
+  React.useEffect(() => {
+    if (!defaultValue) return;
+    if (defaultValue !== value) return;
+
+    const current = new Map();
+    current.set(value, children);
+    setSelectedOption(current);
+  }, [defaultValue]);
 
   return (
     <option value={value} onClick={handleClickOption}>
