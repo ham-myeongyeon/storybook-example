@@ -16,6 +16,8 @@ interface SelectContext {
   setSelectedOption: React.Dispatch<React.SetStateAction<OptionMap | null>>;
   defaultValue?: OptionId;
   placeholder?: string;
+  triggerNode: HTMLButtonElement | null;
+  setTriggerNode: React.Dispatch<HTMLButtonElement | null>;
 }
 
 const SelectContext = React.createContext<SelectContext>({} as SelectContext);
@@ -31,6 +33,8 @@ const Select: React.FC<SelectProps> = (props) => {
   const [selectedOption, setSelectedOption] = React.useState<OptionMap | null>(
     null
   );
+  const [triggerNode, setTriggerNode] =
+    React.useState<HTMLButtonElement | null>(null);
 
   const SelectContextValue: SelectContext = React.useMemo(
     () => ({
@@ -40,8 +44,10 @@ const Select: React.FC<SelectProps> = (props) => {
       setSelectedOption,
       defaultValue,
       placeholder,
+      triggerNode,
+      setTriggerNode,
     }),
-    [isOpen, setIsOpen, selectedOption, defaultValue, placeholder]
+    [isOpen, setIsOpen, selectedOption, defaultValue, placeholder, triggerNode]
   );
 
   return (
@@ -61,13 +67,17 @@ interface TriggerProps extends React.PropsWithChildren {}
 
 const Trigger: React.FC<TriggerProps> = (props) => {
   const { children } = props;
-  const { isOpen, setIsOpen } = React.useContext(SelectContext);
+  const { isOpen, setIsOpen, setTriggerNode } = React.useContext(SelectContext);
 
   const handleClickSelect = () => {
     setIsOpen(!isOpen);
   };
 
-  return <button onClick={handleClickSelect}>{children}</button>;
+  return (
+    <button ref={(node) => setTriggerNode(node)} onClick={handleClickSelect}>
+      {children}
+    </button>
+  );
 };
 
 /*
@@ -87,13 +97,62 @@ const Value: React.FC<ValueProps> = () => {
  * Content
  */
 
-interface ContentProps extends React.PropsWithChildren {}
+interface ContentProps extends React.PropsWithChildren {
+  contentAlignHorizontal: "left" | "center" | "right";
+}
 
 const Content: React.FC<ContentProps> = (props) => {
-  const { children } = props;
-  const { isOpen } = React.useContext(SelectContext);
+  const { contentAlignHorizontal = "center", children } = props;
+  const { isOpen, triggerNode } = React.useContext(SelectContext);
+  const contentRef = React.useRef<HTMLDivElement>(null);
 
-  return <>{isOpen && createPortal(<div>{children}</div>, document.body)}</>;
+  React.useEffect(() => {
+    if (!triggerNode || !contentRef.current) return;
+
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    contentRef.current.style.top = `${
+      triggerNode?.getBoundingClientRect().bottom + scrollTop
+    }px`;
+
+    // eslint-disable-next-line default-case
+    switch (contentAlignHorizontal) {
+      case "left":
+        contentRef.current.style.left = `${
+          triggerNode?.getBoundingClientRect().left
+        }px`;
+        break;
+      case "center":
+        contentRef.current.style.left = `
+          ${
+            triggerNode?.getBoundingClientRect().left +
+            triggerNode.getBoundingClientRect().width / 2
+          }px
+        `;
+        contentRef.current.style.transform = "translateX(-50%)";
+        break;
+      case "right":
+        contentRef.current.style.left = `${
+          triggerNode.getBoundingClientRect().right -
+          contentRef.current.getBoundingClientRect().width
+        }px`;
+        break;
+    }
+
+    return () => {};
+  }, [triggerNode, contentRef.current, isOpen, contentAlignHorizontal]);
+
+  return (
+    <>
+      {isOpen &&
+        createPortal(
+          <div className="absolute z-10 max-w-xs" ref={contentRef}>
+            {children}
+          </div>,
+          // 스토리북 docs 노드
+          document.getElementById("storybook-docs")!
+        )}
+    </>
+  );
 };
 
 /*
@@ -127,11 +186,7 @@ const Option: React.FC<OptionProps> = (props) => {
     setSelectedOption(current);
   }, [defaultValue]);
 
-  return (
-    <option value={value} onClick={handleClickOption}>
-      {children}
-    </option>
-  );
+  return <li onClick={handleClickOption}>{children}</li>;
 };
 
 const Root = Select;
