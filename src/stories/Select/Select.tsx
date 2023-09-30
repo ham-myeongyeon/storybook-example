@@ -160,14 +160,18 @@ const Content: React.FC<ContentProps> = (props) => {
 
   return (
     <>
-      {isOpen &&
-        createPortal(
-          <div className="absolute z-10 max-w-xs" ref={contentRef}>
-            {children}
-          </div>,
-          // 스토리북 docs 노드
-          document.getElementById("storybook-docs")!
-        )}
+      {createPortal(
+        <div
+          className={`${
+            isOpen ? "visible" : "invisible"
+          } absolute z-10 max-w-xs`}
+          ref={contentRef}
+        >
+          {children}
+        </div>,
+        // 스토리북 docs 노드
+        document.getElementById("storybook-docs")!
+      )}
     </>
   );
 };
