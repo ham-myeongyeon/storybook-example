@@ -107,38 +107,45 @@ const Content: React.FC<ContentProps> = (props) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (!triggerNode || !contentRef.current) return;
+    const controlContentPosition = () => {
+      if (!triggerNode || !contentRef.current) return;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      contentRef.current.style.top = `${
+        triggerNode?.getBoundingClientRect().bottom + scrollTop
+      }px`;
 
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    contentRef.current.style.top = `${
-      triggerNode?.getBoundingClientRect().bottom + scrollTop
-    }px`;
+      switch (contentAlignHorizontal) {
+        case "left":
+          contentRef.current.style.left = `${
+            triggerNode?.getBoundingClientRect().left
+          }px`;
+          break;
+        case "center":
+          contentRef.current.style.left = `
+            ${
+              triggerNode?.getBoundingClientRect().left +
+              triggerNode.getBoundingClientRect().width / 2
+            }px
+          `;
+          contentRef.current.style.transform = "translateX(-50%)";
+          break;
+        case "right":
+          contentRef.current.style.left = `${
+            triggerNode.getBoundingClientRect().right -
+            contentRef.current.getBoundingClientRect().width
+          }px`;
+          break;
+      }
+    };
 
-    // eslint-disable-next-line default-case
-    switch (contentAlignHorizontal) {
-      case "left":
-        contentRef.current.style.left = `${
-          triggerNode?.getBoundingClientRect().left
-        }px`;
-        break;
-      case "center":
-        contentRef.current.style.left = `
-          ${
-            triggerNode?.getBoundingClientRect().left +
-            triggerNode.getBoundingClientRect().width / 2
-          }px
-        `;
-        contentRef.current.style.transform = "translateX(-50%)";
-        break;
-      case "right":
-        contentRef.current.style.left = `${
-          triggerNode.getBoundingClientRect().right -
-          contentRef.current.getBoundingClientRect().width
-        }px`;
-        break;
-    }
+    controlContentPosition();
 
-    return () => {};
+    window.addEventListener("resize", controlContentPosition);
+
+    return () => {
+      window.removeEventListener("resize", controlContentPosition);
+    };
   }, [triggerNode, contentRef.current, isOpen, contentAlignHorizontal]);
 
   React.useEffect(() => {
