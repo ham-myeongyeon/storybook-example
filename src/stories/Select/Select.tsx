@@ -103,7 +103,7 @@ interface ContentProps extends React.PropsWithChildren {
 
 const Content: React.FC<ContentProps> = (props) => {
   const { contentAlignHorizontal = "center", children } = props;
-  const { isOpen, triggerNode } = React.useContext(SelectContext);
+  const { isOpen, triggerNode, setIsOpen } = React.useContext(SelectContext);
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -141,6 +141,23 @@ const Content: React.FC<ContentProps> = (props) => {
     return () => {};
   }, [triggerNode, contentRef.current, isOpen, contentAlignHorizontal]);
 
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        contentRef.current &&
+        !contentRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [contentRef]);
+
   return (
     <>
       {isOpen &&
@@ -166,24 +183,32 @@ interface OptionProps extends React.PropsWithChildren {
 
 const Option: React.FC<OptionProps> = (props) => {
   const { value, children } = props;
-  const { defaultValue, selectedOption, setSelectedOption } =
+  const { defaultValue, selectedOption, setSelectedOption, isOpen, setIsOpen } =
     React.useContext(SelectContext);
 
-  const handleClickOption = () => {
-    if (selectedOption?.get(value)) return;
-
+  const saveOption = () => {
     const current = new Map();
     current.set(value, children);
     setSelectedOption(current);
+  };
+
+  const closeSelect = () => {
+    setIsOpen(false);
+  };
+
+  const handleClickOption = () => {
+    closeSelect();
+
+    if (selectedOption?.get(value)) return;
+
+    saveOption();
   };
 
   React.useEffect(() => {
     if (!defaultValue) return;
     if (defaultValue !== value) return;
 
-    const current = new Map();
-    current.set(value, children);
-    setSelectedOption(current);
+    saveOption();
   }, [defaultValue]);
 
   return <li onClick={handleClickOption}>{children}</li>;
