@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 
 /*
  * Select
@@ -90,8 +91,9 @@ interface ContentProps extends React.PropsWithChildren {}
 
 const Content: React.FC<ContentProps> = (props) => {
   const { children } = props;
+  const { isOpen } = React.useContext(SelectContext);
 
-  return <div>{children}</div>;
+  return <>{isOpen && createPortal(<div>{children}</div>, document.body)}</>;
 };
 
 /*
