@@ -72,9 +72,15 @@ const Trigger: React.FC<TriggerProps> = (props) => {
   const { isOpen, setIsOpen, setTriggerNode } = React.useContext(SelectContext);
   const [isFocused, setIsFocused] = React.useState<boolean>(false);
 
-  const handleClickSelect = React.useCallback(() => {
-    setIsOpen(!isOpen);
-  }, []);
+  const handleClickSelect = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.stopPropagation();
+      setIsOpen(!isOpen);
+    },
+    [isOpen]
+  );
+
+  console.log(isOpen);
 
   return (
     <button
@@ -87,7 +93,7 @@ const Trigger: React.FC<TriggerProps> = (props) => {
         setIsFocused(false);
       }}
       ref={(node) => setTriggerNode(node)}
-      onClick={handleClickSelect}
+      onClick={(e) => handleClickSelect(e)}
       className={`${isFocused ? focusedStyle ?? "border-black	" : ""}`}
     >
       {children}
@@ -225,11 +231,15 @@ const Option: React.FC<OptionProps> = (props) => {
     setIsOpen(false);
   }, []);
 
-  const handleClickOption = React.useCallback(() => {
-    closeSelect();
-    if (selectedOption?.get(value)) return;
-    saveOption();
-  }, [selectedOption, closeSelect, saveOption]);
+  const handleClickOption = React.useCallback(
+    (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+      e.stopPropagation();
+      closeSelect();
+      if (selectedOption?.get(value)) return;
+      saveOption();
+    },
+    [selectedOption, closeSelect, saveOption]
+  );
 
   React.useEffect(() => {
     if (!defaultValue) return;
