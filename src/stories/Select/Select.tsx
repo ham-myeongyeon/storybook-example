@@ -72,13 +72,20 @@ const Trigger: React.FC<TriggerProps> = (props) => {
   const { isOpen, setIsOpen, setTriggerNode } = React.useContext(SelectContext);
   const [isFocused, setIsFocused] = React.useState<boolean>(false);
 
-  const handleClickSelect = () => {
+  const handleClickSelect = React.useCallback(() => {
     setIsOpen(!isOpen);
-  };
+  }, []);
 
   return (
     <button
-      onFocus={() => setIsFocused(true)}
+      onFocus={(e) => {
+        e.stopPropagation();
+        setIsFocused(true);
+      }}
+      onBlur={(e) => {
+        e.stopPropagation();
+        setIsFocused(false);
+      }}
       ref={(node) => setTriggerNode(node)}
       onClick={handleClickSelect}
       className={`${isFocused ? focusedStyle ?? "border-black	" : ""}`}
@@ -156,16 +163,19 @@ const Content: React.FC<ContentProps> = (props) => {
     };
   }, [triggerNode, contentRef.current, isOpen, contentAlignHorizontal]);
 
-  React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+  const handleClickOutside = React.useCallback(
+    (e: MouseEvent) => {
       if (
         contentRef.current &&
         !contentRef.current.contains(e.target as Node)
       ) {
         setIsOpen(false);
       }
-    };
+    },
+    [contentRef.current]
+  );
 
+  React.useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
@@ -205,23 +215,21 @@ const Option: React.FC<OptionProps> = (props) => {
   const { defaultValue, selectedOption, setSelectedOption, isOpen, setIsOpen } =
     React.useContext(SelectContext);
 
-  const saveOption = () => {
+  const saveOption = React.useCallback(() => {
     const current = new Map();
     current.set(value, children);
     setSelectedOption(current);
-  };
+  }, []);
 
-  const closeSelect = () => {
+  const closeSelect = React.useCallback(() => {
     setIsOpen(false);
-  };
+  }, []);
 
-  const handleClickOption = () => {
+  const handleClickOption = React.useCallback(() => {
     closeSelect();
-
     if (selectedOption?.get(value)) return;
-
     saveOption();
-  };
+  }, [selectedOption, closeSelect, saveOption]);
 
   React.useEffect(() => {
     if (!defaultValue) return;
