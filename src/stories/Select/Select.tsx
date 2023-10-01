@@ -63,18 +63,26 @@ const Select: React.FC<SelectProps> = (props) => {
  * Trigger
  */
 
-interface TriggerProps extends React.PropsWithChildren {}
+interface TriggerProps extends React.PropsWithChildren {
+  focusedStyle?: string;
+}
 
 const Trigger: React.FC<TriggerProps> = (props) => {
-  const { children } = props;
+  const { children, focusedStyle } = props;
   const { isOpen, setIsOpen, setTriggerNode } = React.useContext(SelectContext);
+  const [isFocused, setIsFocused] = React.useState<boolean>(false);
 
   const handleClickSelect = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <button ref={(node) => setTriggerNode(node)} onClick={handleClickSelect}>
+    <button
+      onFocus={() => setIsFocused(true)}
+      ref={(node) => setTriggerNode(node)}
+      onClick={handleClickSelect}
+      className={`${isFocused ? focusedStyle ?? "border-black	" : ""}`}
+    >
       {children}
     </button>
   );
