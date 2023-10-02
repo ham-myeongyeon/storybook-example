@@ -80,8 +80,6 @@ const Trigger: React.FC<TriggerProps> = (props) => {
     [isOpen]
   );
 
-  console.log(isOpen);
-
   return (
     <button
       onFocus={(e) => {
