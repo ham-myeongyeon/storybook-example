@@ -119,7 +119,7 @@ const Value: React.FC<ValueProps> = () => {
  */
 
 interface ContentProps extends React.PropsWithChildren {
-  contentAlignHorizontal: "left" | "center" | "right";
+  contentAlignHorizontal?: "left" | "center" | "right";
 }
 
 const Content: React.FC<ContentProps> = (props) => {
